@@ -1,0 +1,171 @@
+/*******************************************************************************
+Name: Sarah Redmon
+Date: 4/1/19
+Instructor: Ms. Tucker
+Class: VolunteersGUI
+Purpose: To show ArrayList of Volunteers & let user do simple actions
+*******************************************************************************
+*/
+
+import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.io.*;
+
+public class VolunteersGUI extends JPanel
+{
+    /*------------------------------------------------------------------------------
+Initializes JButtons & ArrayList for program
+------------------------------------------------------------------------------
+*/
+    private JButton display, add, remove, close;
+    private ArrayList<String> list = new ArrayList<String>();
+    
+    public VolunteersGUI()
+    {
+        /*------------------------------------------------------------------------------
+               Layout is set as Grid (2 by 2)
+               ------------------------------------------------------------------------------
+               */
+        setLayout(new GridLayout(2, 2));
+
+        /*------------------------------------------------------------------------------
+               Display, Add, Remove, & Exit Buttons are made & action listeners added into Button Listener 
+               ------------------------------------------------------------------------------
+               */
+              
+        display = new JButton ("Display");
+        display.setBackground (Color.white);
+        display.setPreferredSize(new Dimension(100, 50));
+ 
+        add = new JButton ("Add");
+        add.setBackground (Color.white);
+        add.setPreferredSize(new Dimension(100, 50));
+
+        remove = new JButton ("Remove");
+        remove.setBackground (Color.white);
+        remove.setPreferredSize(new Dimension(100, 50));
+ 
+        close = new JButton ("Close");
+        close.setBackground (Color.white);
+        close.setPreferredSize(new Dimension(100, 50));
+
+        display.addActionListener (new ButtonListener());
+        add.addActionListener (new ButtonListener());
+        remove.addActionListener (new ButtonListener());
+        close.addActionListener (new ButtonListener());
+ 
+        /*------------------------------------------------------------------------------
+               Adds in the components to be shown in GUI
+               ------------------------------------------------------------------------------
+               */
+        add(display);
+        add(add);
+        add(remove);
+        add(close);
+ 
+        /*------------------------------------------------------------------------------
+               Display options
+               ------------------------------------------------------------------------------
+               */
+        setPreferredSize (new Dimension (200, 100));
+        setBackground (Color.lightGray);
+    }
+
+    private class ButtonListener implements ActionListener
+    {
+        public void actionPerformed (ActionEvent event)
+        {
+            if (event.getSource() == display) {
+                /*------------------------------------------------------------------------------
+               If Display is selected:
+               *Scan file Volunteers.csv
+               *Add data into ArrayList
+               *Close the scanner
+               *Show the ArrayList in Terminal Window
+               *Use Try-Catch to throw FileNotFoundException
+               ------------------------------------------------------------------------------*/
+
+try {
+                    Scanner s = new Scanner(new File("Volunteers.csv"));
+                    while (s.hasNext()){
+                        list.add(s.next());
+                    }
+                    s.close();
+                    for (String showList : list) {
+                        System.out.println(showList);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (event.getSource() == add) {
+                /*------------------------------------------------------------------------------
+               If Add is selected:
+               *Scan file Volunteers.csv
+               *Ask user for name and email
+               *Add input to ArrayList
+               *Sort with Collections
+               *Show updated list in TW
+               *Use Try-Catch to throw FileNotFoundException
+               ------------------------------------------------------------------------------*/
+
+                try {
+                    Scanner s = new Scanner(new File("Volunteers.csv"));
+                    String addLastName = JOptionPane.showInputDialog("Enter a last name: ");
+                    String addFirstName = JOptionPane.showInputDialog("Enter a first name: ");
+                    String addEmail = JOptionPane.showInputDialog("Enter an email: ");
+                    list.add(addLastName + "," + addFirstName + "," + addEmail);
+                    Collections.sort(list);
+                    System.out.println();
+                    System.out.println("UPDATED LIST");
+                    for (String list2: list) {
+                        System.out.println(list2);
+		    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (event.getSource() == remove) {
+                /*------------------------------------------------------------------------------
+               If Remove is selected:
+               *Ask user what index they want to remove
+               *Parse input to int num
+               *Confirm input with user
+               *Show updated list in TW
+               ------------------------------------------------------------------------------*/
+
+                String ask2 = JOptionPane.showInputDialog("What index do you want to remove (first one is 0)?");
+                int num = Integer.parseInt(ask2);
+                int ask3 = JOptionPane.showConfirmDialog(null, "Do you want to remove that index?");
+                System.out.println();
+                System.out.println("UPDATED LIST");
+                if (ask3 == JOptionPane.YES_OPTION) {
+                    list.remove(num);
+                    for (String list3: list) {
+                        System.out.println(list3);
+                    }
+                }
+            }
+            if (event.getSource() == close) {
+                /*------------------------------------------------------------------------------
+               If Close is selected:
+               *Ask user if they want to save changes
+               *If yes put ArrayList info into Volunteers2.csv & exit
+               *If no then just exit
+               *If cancel do nothing
+               ------------------------------------------------------------------------------*/
+
+                int ask4 = JOptionPane.showConfirmDialog(null, "Want to save your changes?");
+                if (ask4 == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                } else if (ask4 == JOptionPane.NO_OPTION) {
+                    System.exit(0);
+                }
+            }
+        }
+    }
+}
